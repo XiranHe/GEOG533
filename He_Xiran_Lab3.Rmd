@@ -1,0 +1,86 @@
+---
+title: "Lab_3"
+author: "Xiran_He"
+date: "October 2, 2017"
+output: 
+  html_document:
+   toc: TRUE
+   toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1
+### Part 1-A
+```{r,echo=FALSE}
+library(MASS)
+df <- Cars93
+train_idx <- sample(1:nrow(Cars93),40,replace=FALSE)
+train <- Cars93[train_idx,] # select all these rows
+test <- Cars93[-train_idx,] 
+write.csv(train,file = 'train.csv',row.names = FALSE)
+write.csv(test,file = 'test.csv',row.names = FALSE)
+read.csv('test.csv')
+```
+### Part 1-B
+```{r,echo=FALSE}
+train.Usa <- train[train$Origin == "USA",]
+train.NUsa <- train[train$Origin == "non-USA",]
+nrow(train.Usa)
+nrow(train.NUsa)
+```
+## Question 2 
+### Part 2-A
+```{r,echo=FALSE}
+set.seed(10)
+birth.10 <- sample(c('boy','girl'),size = 10,prob = c(.515,.485),replace = TRUE)
+table(birth.10)
+```
+### Part 2-B
+```{r,echo=FALSE}
+set.seed(1000)
+birth.1000 <- sample(c('boy','girl'),size = 1000,prob = c(.515,.485),replace = TRUE)
+table(birth.1000)
+```
+## Question 3
+### Part 3-A
+```{r,echo=FALSE}
+dbinom(3, size = 10, prob = .515)
+```
+### Part 3-B
+```{r,echo=FALSE}
+pbinom(8,size = 10,prob = 0.515,lower.tail = FALSE) + dbinom(8,10,0.515)
+```
+### Part 3-C
+```{r,echo=FALSE}
+n <- 10
+x <- 0:n 
+y <- dbinom(x,size = n,prob = 0.515) 
+plot(x,y,type = "b",pch = 16,col="pink")
+title(main = list("The possibility of exactly 3 boys", col = "black",font = 3))
+
+n <- 10
+x <- 0:10
+y <- pbinom(x,10,prob = 0.515)
+plot(x,y,type = "b",pch = 16,col = "pink")
+title(main = list("The pobability of boys more than 8",col="black",font = 3))
+```
+
+## Question 4
+### Part 4-A
+```{r,echo= FALSE}
+dpois(4,lambda = 5)
+```
+### Part 4-B
+```{r,echo=FALSE}
+ppois(5,lambda = 5,lower.tail = FALSE)
+```
+### Part 4-C
+```{r,echo=FALSE}
+x <- 0:20
+y <- dpois(x,lambda = 5)
+plot(x, y, type = "b", pch = 16, col = "pink")
+title(main = list("The Possibility of 20 arriving cars", col = "black", font = 3))
+```
