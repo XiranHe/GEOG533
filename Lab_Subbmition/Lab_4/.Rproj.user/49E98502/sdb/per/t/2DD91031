@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"(GEOG 533) Lab 4\"\nauthor: \"Xiran_He\"\ndate: \"October 5, 2017\"\noutput: html_document\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```\n\n# Question_1\n## 1-a\n\n```{r}\npnorm(20,32,7)\ncurve(dnorm(x, mean = 32,sd = 7),from = 11,to = 53)\ncord.x <- c(11, seq(11,20, by = 0.01),20)\ncord.y <- c(0, dnorm(seq(11,20,0.01), mean = 32, sd = 7),0)\npolygon(cord.x,cord.y,col = \"blue\")\n```\n\n## 1-b\n\n```{r}\npnorm(35,32,7,lower.tail = F)\ncurve(dnorm(x, mean = 32,sd = 7),from = 11,to = 53)\ncord.x <- c(35, seq(35,53, by = 0.01),53)\ncord.y <- c(0, dnorm(seq(35,53,0.01), mean = 32, sd = 7),0)\npolygon(cord.x,cord.y,col = \"blue\")\n```\n## 1-c\n```{r}\npnorm(40,32,7)-pnorm(20,32,7)\ncurve(dnorm(x, mean = 32,sd = 7),from = 11,to = 53)\ncord.x <- c(20, seq(20,40, by = 0.01),40)\ncord.y <- c(0, dnorm(seq(20,40,0.01), mean = 32, sd = 7),0)\npolygon(cord.x,cord.y,col = \"blue\")\n```\n# Question_2\n## 2-a\n```{r}\npexp(3, rate = 0.1)\n```\n### Plot the density function\n```{r}\ncurve(dexp(x,0.1),from = 0, to = 55,lwd=2)\ncord.x <- c(0,seq(0,3,by = 0.01),3)\ncord.y <- c(0,dexp(seq(0,3,0.01),0.1),0)\npolygon(cord.x, cord.y,col = \"yellow\")\n```\n## 2-b\n```{r}\npexp(20,rate = 0.1,lower.tail = F)\n```\n### Plot the density function\n```{r}\ncurve(dexp(x,0.1),from = 0, to = 55,lwd=2)\ncord.x <- c(20,seq(20,55,by = 0.01),55)\ncord.y <- c(0,dexp(seq(20,55,0.01),0.1),0)\npolygon(cord.x, cord.y,col = \"yellow\")\n```\n## 2-c\n```{r}\npexp(10,rate = 0.1)-pexp(5,rate = 0.1)\n```\n### Plot the density function\n```{r}\ncurve(dexp(x,0.1),from = 0, to = 55,lwd=2)\ncord.x <- c(5,seq(5,10,by = 0.01),10)\ncord.y <- c(0,dexp(seq(5,10,0.01),0.1),0)\npolygon(cord.x, cord.y,col = \"yellow\")\n```\n# Question_3\n## 3-a\n```{r}\nlibrary(raster) \nras1 <- raster(nrows=30,ncols=30,xmn=0,xmx=30,ymn=0,ymx=30) \nras1 \nras1[] <- runif(ncell(ras1)) \n```\n### Uniform Distribution Plot\n```{r}\nplot(ras1) \n```\n### Uniform Distribution Hist\n```{r}\nhist(ras1) \n```\n## 3-b\n```{r}\nlibrary(raster) \nras2 <- raster(nrows=30,ncols=30,xmn=0,xmx=30,ymn=0,ymx=30) \nras2 \nras2[] <- rnorm(ncell(ras2)) \n```\n### Normal Distribution Plot\n```{r}\nplot(ras2)\n```\n### Normal Distribution Hist\n```{r}\nhist(ras2)\n```\n## 3-c\n```{r}\nlibrary(raster) \nras3 <- raster(nrows=30,ncols=30,xmn=0,xmx=30,ymn=0,ymx=30) \nras3 \nras3[] <- ras1[,] + ras2[,]\n```\n### Addition plot\n```{r}\nplot(ras3)\n```\n### Addition hist\n```{r}\nhist(ras3)\n```\n## 3-d\n```{r}\nm <- cellStats(ras3,\"mean\") \nras[ras3 <= m] <- 0 \nras[ras3 > m] <- 1 \n```\n### Mean plot\n```{r}\nplot(ras)\n```\n### Mean hist\n```{r}\nhist(ras)\n```\n### TIFF image\n```{r}\nwriteRaster(ras,filename =  \"test.tif\")\n```\n",
+    "created" : 1507244292928.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3124463496",
+    "id" : "2DD91031",
+    "lastKnownWriteTime" : 1507245506,
+    "last_content_update" : 1507245506297,
+    "path" : "~/First year of graduate/Statistics for Geography/Lab_4/He_Xiran_Lab4.Rmd",
+    "project_path" : "He_Xiran_Lab4.Rmd",
+    "properties" : {
+        "last_setup_crc32" : "27FD92A3bb338d19",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

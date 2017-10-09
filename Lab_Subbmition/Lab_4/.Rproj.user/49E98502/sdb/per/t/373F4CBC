@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "# Question_1\n## 1-a\npnorm(20,32,7)\ncurve(dnorm(x, mean = 32,sd = 7),from = 11,to = 53)\ncord.x <- c(11, seq(11,20, by = 0.01),20)\ncord.y <- c(0, dnorm(seq(11,20,0.01), mean = 32, sd = 7),0)\npolygon(cord.x,cord.y,col = \"blue\")\n\n## 1-b\npnorm(35,32,7,lower.tail = F)\ncurve(dnorm(x, mean = 32,sd = 7),from = 11,to = 53)\ncord.x <- c(35, seq(35,53, by = 0.01),53)\ncord.y <- c(0, dnorm(seq(35,53,0.01), mean = 32, sd = 7),0)\npolygon(cord.x,cord.y,col = \"blue\")\n\n## 1-c\npnorm(40,32,7)-pnorm(20,32,7)\ncurve(dnorm(x, mean = 32,sd = 7),from = 11,to = 53)\ncord.x <- c(20, seq(20,40, by = 0.01),40)\ncord.y <- c(0, dnorm(seq(20,40,0.01), mean = 32, sd = 7),0)\npolygon(cord.x,cord.y,col = \"blue\")\n\n# Question_2\n## 2-a\npexp(3, rate = 0.1)\n\n### Plot the density function\ncurve(dexp(x,0.1),from = 0, to = 55,lwd=2)\ncord.x <- c(0,seq(0,3,by = 0.01),3)\ncord.y <- c(0,dexp(seq(0,3,0.01),0.1),0)\npolygon(cord.x, cord.y,col = \"yellow\")\n\n## 2-b\npexp(20,rate = 0.1,lower.tail = F)\n\n### Plot the density function\ncurve(dexp(x,0.1),from = 0, to = 55,lwd=2)\ncord.x <- c(20,seq(20,55,by = 0.01),55)\ncord.y <- c(0,dexp(seq(20,55,0.01),0.1),0)\npolygon(cord.x, cord.y,col = \"yellow\")\n\n## 2-c\npexp(10,rate = 0.1)-pexp(5,rate = 0.1)\n\n### Plot the density function\ncurve(dexp(x,0.1),from = 0, to = 55,lwd=2)\ncord.x <- c(5,seq(5,10,by = 0.01),10)\ncord.y <- c(0,dexp(seq(5,10,0.01),0.1),0)\npolygon(cord.x, cord.y,col = \"yellow\")\n\n# Question_3\n## 3-a\nlibrary(raster) \nras1 <- raster(nrows=30,ncols=30,xmn=0,xmx=30,ymn=0,ymx=30) \nras1 \nras1[] <- runif(ncell(ras1)) \n### Uniform Distribution Plot\nplot(ras1) \n### Uniform Distribution Hist\nhist(ras1) \n\n## 3-b\nlibrary(raster) \nras2 <- raster(nrows=30,ncols=30,xmn=0,xmx=30,ymn=0,ymx=30) \nras2 \nras2[] <- rnorm(ncell(ras2)) \n### Normal Distribution Plot\nplot(ras2)\n### Normal Distribution Hist\nhist(ras2)\n\n## 3-c\nlibrary(raster) \nras3 <- raster(nrows=30,ncols=30,xmn=0,xmx=30,ymn=0,ymx=30) \nras3 \nras3[] <- ras1[,] + ras2[,]\n### Addition plot\nplot(ras3)\n### Addition hist\nhist(ras3)\n\n## 3-d\nm <- cellStats(ras3,\"mean\") \nras[ras3 <= m] <- 0 \nras[ras3 > m] <- 1 \n### Mean plot\nplot(ras)\n### Mean hist\nhist(ras)\n### TIFF image\nwriteRaster(ras,filename = \"test.tif\",overwrite = T)\n\n",
+    "created" : 1507232569036.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "594183867",
+    "id" : "373F4CBC",
+    "lastKnownWriteTime" : 1507245523,
+    "last_content_update" : 1507245523893,
+    "path" : "~/First year of graduate/Statistics for Geography/Lab_4/He_Xiran_Lab4.R",
+    "project_path" : "He_Xiran_Lab4.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
