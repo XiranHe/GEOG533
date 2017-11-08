@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "## Q1-1\n### 1a\nincome <- c(30,28,52,40,35)\neducation <- c(12,13,18,16,17)\nresult <- cor.test(income, education, method = \"pearson\")\nr <- result$estimate\nr\n\n### 1b\nif(result$p.value > 0.05){\n  print(\"we accept null hypothesis that p = 0\")\n}else {\n  print(\"we reject the null hypothesis that p = 0\")\n}\n\n### 1c\nincome.rk <- rank(income)\neducation.rk <- rank(education)\nresult <- cor.test(income.rk, education.rk, method = \"spearman\")\nresult\n\n### 1d\ndiffzero <- result$estimate - 0\nif(diffzero > 0.05){\n  print(\"the value is not significantly different from zero\")\n}else {\n  print(\"the value is significantly different from zero\")\n}\n\n## Q2-3\n\n\n\n## Q3-4\nX <- c(2,8,9,7)\nY <- c(6,6,10,4)\nresult <- cor.test(X, Y, method = \"pearson\")\nr <- result$estimate\nr\nif(result$p.value > 0.05){\n  print(\"the correlation is equal to 0\")\n}else {\n  print(\"the correlation is not equal to 0\")\n}\n\n\n## Q4-6\nMincome <- c(35165,35778,37027,37256,37512,37997,37343,36054,35593,35241,35486)\nrace <- c(399,469,429,450,474,598,364,430,433,410,317)\nresult <- cor.test(Mincome, race, method = \"pearson\")\nr <- result$estimate\nr\n\n### ???? interpret your results\nif(result$p.value > 0.05){\n  print(\"the correlation coefficient is equal to 0\")\n}else {\n  print(\"the correlation coefficient is not equal to 0\")\n}\n\n\n## Q5-7\n#### ????? unequal answer & warning\nn = 6\nRX <- c(1,2,5,6,11,12)\nRY <- c(8,4,12,3,10,7)\nresult <- cor.test(sped.r, dist.r, method = \"spearman\")\nresult\n\ndifferent <- RX-RY\nsqdif <- different * different\nTotal <- sum(sqdif)\nspear <- 1-(6*Total/(n*n*n-n))\nspear\n\nif(result$p.value > 0.05){\n  print(\"true correlation is equal to 0\")\n}else {\n  print(\"true correlation is not equal to 0\")\n}\n\n## Q6-8\nX <- c(3.2,2.4,1.6,8.3,7.2,5.1)\nY <- c(6.2,7.3,8.1,2.6,6.3,4.3)\nresult <- cor.test(X, Y, method = \"pearson\")\nr <- result$estimate\nr\nif(result$p.value > 0.05){\n  print(\"the correlation coefficient is equal to 0\")\n}else {\n  print(\"the correlation coefficient is not equal to 0\")\n}\n\n\n## Q7-9\nurl <- \"table.csv\"\ntable <- read.csv(url,header = TRUE)\nresult <- cor.test(table$Bdrms, table$Lotsize, method = \"pearson\")\nr <- result$estimate\nr\n\n\n\n## Q8-10\nurl <- \"UK.csv\"\nUK <- read.csv(url,header = TRUE)\nresult <- cor.test(UK$floorarea, UK$bedrooms, method = \"pearson\")\nr <- result$estimate\nr\n\n## Q9\nlibrary(datasets)\ndf <- cars\nspeed <- cars$speed\ndist <- cars$dist\n\n### 9a\nplot(speed, dist)\n\n### 9b\nn <- nrow(df)\nn\n\n### 9c\ndf$x <- speed - mean(speed)\ndf$y <- dist - mean(dist)\ndf$diff <- df$x * df$y\ntotal <- sum(df$diff)\ntotal\nsd.x <- sd(speed)\nsd.y <- sd(dist)\nr.pear <- total / ((n-1)*sd.x*sd.y)\nr.pear\n\n### 9d\nresult <- cor.test(speed, dist, method = \"pearson\")\nr.cor <- result$estimate\nr.cor\n\n### 9e\nsped.r <- rank(speed)\ndist.r <- rank(dist)\ndf$dffrank <- sped.r-dist.r\nsqrdif <- df$dffrank * df$dffrank\ntotal2 <- sum(sqrdif)\nr.s <- 1-6*total2/(n^3-n)\nr.s\n\n### 9f\ncor.test(sped.r, dist.r, method = \"spearman\")\n\n\n\n\n\n\n\n\n\n",
+    "created" : 1509828272259.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1474033104",
+    "id" : "EBC72397",
+    "lastKnownWriteTime" : 1509832391,
+    "last_content_update" : 1509832391894,
+    "path" : "~/First year of graduate/Statistics for Geography/Lab7/lab7.R",
+    "project_path" : "lab7.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
