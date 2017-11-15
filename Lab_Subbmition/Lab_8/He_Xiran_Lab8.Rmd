@@ -1,0 +1,288 @@
+---
+title: "Geog533 Lab 8"
+author: "Your name"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+Complete the following exercises in Chapter 8 (Introduction to Regression Analysis) of the textbook [R] pages 247-250. 
+
+## Question 1
+
+This is Exercise 1 in Chapter 8 of the Textbook [R].
+
+A regression of weekly shopping trip frequency on annual income (data entered in thousands of dollars) is performed on data collected from 24 respondents. The results are summarized below:
+
+* Intercept: 0.46
+* Slope: 0.19
+
+|          | Sum of squares  | Degrees of freedom |  Mean square   |       *F*       |
+|----------|-----------------|--------------------|----------------|-----------------|
+|Regression|                 |                    |                |                 |
+| Residual |       1.7       |                    |                |                 |
+| Total    |       2.3       |                    |                |                 |
+
+
+### Question 1(a)
+Fill in the blanks in the ANOVA table.
+
+```{r}
+n <- 24
+residual <- 1.7
+total <- 2.3
+regression <- total - residual
+
+df.regression <- 1
+df.residual <- n-2
+df.total <- n-1
+
+mean.regression <- regression/df.regression
+mean.residual <- 1.7 / df.residual
+mean.total <- df.total/2.3
+f1 <- mean.regression/mean.residual
+```
+
+
+|          | Sum of squares  | Degrees of freedom |  Mean square   |       *F*       |
+|----------|-----------------|--------------------|----------------|-----------------|
+|Regression|   `r regression` |  `r df.regression`   | `r mean.regression`|        `r f1`    |
+| Residual |       1.7       |  `r df.residual`     | `r mean.residual` |                |
+| Total    |       2.3       |  `r df.total`        | `r mean.total`  |                  |
+
+
+
+### Question 1(b)
+What is the predicted number of weekly shopping trips for someone making $50,000/year?
+```{r}
+a <- 0.46
+b <- 0.19
+x <- 50000/1000
+p <- a + b*x
+round(p,digits = 1)
+```
+
+
+### Question 1(c)
+In words, what is the meaning of the coefficient 0.19?
+
+when one unit increases in annual income, the weekly shopping trip frequency would accerate 0.19
+
+### Question 1(d)
+Is the regression coefficient significantly different from zero? How do you know?
+```{r}
+f.critical <- qf(0.95, df1 = 1, df2 = n-2)
+if(f < f.critical){
+  print("we accept the null hypothdsis: the regression coefficient is different from zero")
+}else {
+  print("we reject the null hypothesis: the regression coefficient is not different from zero")
+}
+```
+
+
+
+### Question 1(e)
+What is the value of the correlation coefficient?
+```{r}
+R2 <- regression/total
+R <- sqrt(R2)
+R
+```
+
+
+
+
+
+## Question 2
+
+This is Exercise 6 in Chapter 8 of the Textbook [R].
+
+The following data are collected in an effort to determine whether snowfall is dependent upon elevation: 
+
+| Snowfall (inches) | Elevation (feet) |
+|-------------------|------------------|
+|       36          |       400        |
+|       78          |       800        |
+|       11          |       200        |
+|       45          |       675        |
+
+Using R, show your work on exercises (a) through (g).
+
+### Question 2(a)
+Find the regression coefficients (the intercept and the slope coefficient).
+```{r}
+snowfall <- c(36, 78, 11,45)
+elevation <- c(400,800,200,675)
+snowfall.m <- mean(snowfall)
+elevation.m <- mean(elevation)
+m <- lm(snowfall ~ elevation)
+
+Stop <- sum((snowfall-snowfall.m)*(elevation-elevation.m)) 
+Strail <- sum((elevation-elevation.m)^2 )
+slope <- Stop/Strail
+intercept <- snowfall.m-slope*elevation.m
+slope
+intercept
+```
+
+```{r}
+summary(m)
+```
+
+```{r}
+print("the intercept and the slope are not significant")
+```
+
+
+### Question 2(b)
+Estimate the standard error of the residuals about the regression line.
+```{r}
+n <- 4
+m <- lm(snowfall ~ elevation)
+result <- summary(m)
+top <- sum((result$residuals - mean(result$residuals))^2)
+bot <- n-2
+sde <- sqrt(top/bot)
+sde
+```
+
+
+### Question 2(c)
+Test the hypothesis that the regression coefficient associated with the independent variables is equal to zero. Also place a 95% confidence interval on the regression coefficient.
+```{r}
+A <- anova(m)
+f <- A$`F value`[1]
+f.critical <- qf(0.95, df1 = 1, df2 = n-2)
+if (f > f.critical){
+  print("we reject the hypothesis that the independent variables is equal to zero")
+}else{
+  print("we accept the hypothesis that the independent variables is equal to zero")
+}
+```
+
+
+### Question 2(d)
+Find the value of $r^2$.
+```{r}
+R2 <- result$r.squared
+R2
+```
+
+
+### Question 2(e)
+Make a table of the observed values, predicted values, and the residuals.
+```{r}
+library(knitr)
+snowfall <- c(36, 78, 11,45)
+predict <- m$fitted.values
+residual <- m$residuals
+residual
+df1 <- data.frame(snowfall, predict, residual)
+kable(df1)
+```
+
+
+### Question 2(f)
+Prepare an analysis of variance table portraying the regression results.
+```{r}
+result <- anova(m)
+result$Df[[1]]
+result$Df[[2]]
+result$`Sum Sq`[[1]]
+result$`Sum Sq`[[2]]
+total <- result$`Sum Sq`[[1]]+result$`Sum Sq`[[2]]
+result$`Mean Sq`[[1]]
+result$`Mean Sq`[[2]]
+total.m <- total/2
+result$`F value`[[1]]
+```
+
+
+|          | Sum of squares  | Degrees of freedom |  Mean square   |       *F*       |
+|----------|-----------------|--------------------|----------------|-----------------|
+|Regression|2047.77 |1 | 2047.77 |16.17339  |
+| Residual |253.2274   |2 |  126.6137 |                 |
+| Total    |2301        |        3         |              |                 |
+### Question 2(g)
+Graph the data and the regression line.
+```{r}
+plot(snowfall ~ elevation)
+abline(m, col = "blue", lwd = 2)
+```
+
+
+
+
+## Question 3
+
+This is Exercise 10 in Chapter 8 of the Textbook [R].
+
+Use R and the [Milwaukee dataset](http://spatial.binghamton.edu/geog533/data/Milwaukee_Sales.csv) to:
+
+### Problem
+perform a regression using sales price as the dependent variable and lot size as the independent variable.
+
+### Solution
+```{r}
+url = "http://spatial.binghamton.edu/geog533/data/Milwaukee_Sales.csv"
+df3 <- read.csv(file = url)
+y1 <- df3$SalePrice
+x1 <- df3$LotSize
+m1 <- lm(y1 ~ x1)
+m1
+plot(y1 ~x1)
+abline(m1, col = "red", lwd = 3)
+print("y = 92984.25 + 6.443x")
+```
+
+
+
+## Question 4
+
+This is Exercise 11 in Chapter 8 of the Textbook [R].
+
+Use R and the Hypothetical [UK Housing Prices dataset](http://spatial.binghamton.edu/geog533/data/UK_Housing.csv) to:
+
+### Question 4(a) 
+perform a regression using house price as the dependent variable, and number of bedrooms as the independent variable;
+
+```{r}
+ur2 = "http://spatial.binghamton.edu/geog533/data/UK_Housing.csv"
+df4 <- read.csv(file = ur2)
+y2 <- df4$price
+x2 <- df4$bedrooms
+m2 <- lm(y2 ~ x2)
+m2
+plot(y2 ~x2)
+abline(m2, col = "purple", lwd = 3)
+print("y = 11254 + 11893x")
+```
+
+
+### Question 4(b) 
+(b) repeat part (a), using the number of bathrooms as the independent variable, and comment on the results.
+```{r}
+ur2 = "http://spatial.binghamton.edu/geog533/data/UK_Housing.csv"
+df4 <- read.csv(file = ur2)
+y3 <- df4$price
+x3 <- df4$bathrooms
+m <- lm(y3 ~ x3)
+m
+plot(y3 ~x3)
+abline(m, col = "pink", lwd = 3)
+print("y = 32729 + 7113x")
+```
+
+
+## Question 5
+Download the [hometown.csv](http://spatial.binghamton.edu/geog533/data/hometown.csv), append your name and hometown coordinates to the csv, then use [leaflet](https://rstudio.github.io/leaflet/) to create a web map (10 pt.)
+
+```{r}
+library(leaflet)
+m <- leaflet(width = "100%") %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=106.7828953, lat=26.622512, popup="The birthplace of Xiran He")
+m  # Print the map
+```
+
