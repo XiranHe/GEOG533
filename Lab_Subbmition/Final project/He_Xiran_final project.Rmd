@@ -1,0 +1,241 @@
+---
+title: "Sentiment Analysis"
+author: "He Xiran"
+output: 
+  html_notebook:
+    toc: TRUE
+    toc_float: TRUE
+---
+
+## Creating World Cloud
+In this part I want to create a world cloud about Trump. According to this way I what words people will use to evaluate Trump.
+
+### Authentication with OAuth
+```{r, message=FALSE, warning=FALSE}
+library(twitteR)
+library(ROAuth)
+
+# you must get the following information from the Twitter App you just created
+my.consumer.key = "jGMlhMS8kBFdXd8eYZElRbzJH"
+my.consumer.secret = "HMTxTdQ1IruiQT4PkeK0upLxKpsBBcql2gDIkUUOXfoIG0KYFl"
+my.access.token = "917361228456095745-uJSuEQNSwGhrYhhycgX9i3UHRo73DnH"
+my.access.token.secret = "RQFqWp5xI0gv1uzi41MfH5F2UWjLw3hhdVljrQOO4hxmP"
+
+my_oauth <- setup_twitter_oauth(consumer_key = my.consumer.key, consumer_secret = my.consumer.secret, access_token = my.access.token, access_secret = my.access.token.secret)
+```
+
+### Extract Tweets	
+
+```{r}
+tweets <- searchTwitter("#Trump", n=1000, lang="en")
+tweets.text <- sapply(tweets, function(x) x$getText())
+```
+
+
+### Clean Up Text	and remove stop words	
+
+```{r, message=FALSE, warning=FALSE}
+# Replace blank space (ârtâ)
+tweets.text <- gsub("rt", "", tweets.text)
+
+# Replace @UserName
+tweets.text <- gsub("@\\w+", "", tweets.text)
+
+# Remove punctuation
+tweets.text <- gsub("[[:punct:]]", "", tweets.text)
+
+# Remove links
+tweets.text <- gsub("http\\w+", "", tweets.text)
+
+# Remove tabs
+tweets.text <- gsub("[ |\t]{2,}", "", tweets.text)
+
+# Remove blank spaces at the beginning
+tweets.text <- gsub("^ ", "", tweets.text)
+
+# Remove blank spaces at the end
+tweets.text <- gsub(" $", "", tweets.text)
+ 
+# #convert all text to lower case
+tweets.text <- tolower(tweets.text)
+
+if(!require(tm)) {install.packages("tm")}
+library(tm)
+
+#create corpus
+tweets.text.corpus <- Corpus(VectorSource(tweets.text))
+
+#clean up by removing stop words
+tweets.text.corpus <- tm_map(tweets.text.corpus, function(x) removeWords(x,stopwords()))
+```
+
+### Generate Word Cloud	
+
+```{r, message=FALSE, warning=FALSE}
+if(!require(wordcloud)) {install.packages("wordcloud")}
+library(wordcloud)
+
+#generate wordcloud
+wordcloud(tweets.text.corpus,min.freq = 2, scale=c(7,0.5),colors=brewer.pal(8, "Dark2"),  random.color= TRUE, random.order = FALSE, max.words = 150)
+```
+
+## Part 2. Sentiment Analysis
+
+### Read Positive and Negative Words
+ 
+```{r, message=FALSE, warning=FALSE}
+setwd("C:/Users/Lei/Documents/First year of graduate/Statistics for Geography/Final project/Final project")
+      neg = scan("negative-words.txt", what="character", comment.char=";")
+      pos = scan("positive-words.txt", what="character", comment.char=";")
+```
+
+### Function for Scoring Tweets
+Create a histogram and a boxplot of the population.
+```{r}
+score.sentiment = function(tweets, pos.words, neg.words)
+
+{
+scores = laply(tweets, function(tweet, pos.words, neg.words) {
+
+tweet = gsub('https://','',tweet) # removes https://
+tweet = gsub('http://','',tweet) # removes http://
+tweet=gsub('[^[:graph:]]', ' ',tweet) ## removes graphic characters  #like emoticons 
+tweet = gsub('[[:punct:]]', '', tweet) # removes punctuation 
+tweet = gsub('[[:cntrl:]]', '', tweet) # removes control characters
+tweet = gsub('\\d+', '', tweet) # removes numbers
+tweet=str_replace_all(tweet,"[^[:graph:]]", " ") 
+tweet = tolower(tweet) # makes all letters lowercase
+
+word.list = str_split(tweet, '\\s+') # splits the tweets by word in a list
+words = unlist(word.list) # turns the list into vector
+pos.matches = match(words, pos.words) ## returns matching values for words from list 
+neg.matches = match(words, neg.words)
+pos.matches = !is.na(pos.matches) ## converts matching values to true of false
+neg.matches = !is.na(neg.matches)
+ 
+score = sum(pos.matches) - sum(neg.matches) # true and false are treated as 1 and 0 so they can be added
+ 
+return(score)
+ 
+}, pos.words, neg.words )
+ 
+scores.df = data.frame(score=scores, text=tweets)
+ 
+return(scores.df)
+ 
+}
+```
+
+
+### Extract Tweets
+Use R package UScensus2010tract to complete the following tasks:    (20 pt.)
+```{r, message=FALSE, warning=FALSE}
+library(stringr)
+library(plyr)
+tweets = searchTwitter('Trump',n=500)
+Tweets.text = laply(tweets,function(t)t$getText()) # gets text from Tweets
+analysis = score.sentiment(Tweets.text, pos, neg) # calls sentiment function
+
+```
+
+### Calculate the proportion of netizen who have a positive attitude towards Trump	
+Plot a map of New York census tracts using the plot function.
+```{r, message=FALSE, warning=TRUE}
+Tweets <- list()
+Tweets.text <- list()
+analysis <- list()
+sup_ratio <- list()
+weight_ratio <- list()
+
+for(i in 1:15){
+        Tweets[[i]] <- searchTwitter('Trump',n = 500,locale = 11/i/17)
+        Tweets.text[[i]] = laply(Tweets[[i]],function(t)t$getText()) # gets text from Tweets
+        analysis[[i]] = score.sentiment(Tweets.text[[i]], pos, neg) # calls sentiment function
+        k <- 0
+        cal <- analysis[[i]]$score
+        for(j in 1:500){
+          if(cal[j]>=1){
+            k <- k+1
+          } 
+        }
+        sup_ratio[i] <- k/500
+}
+ratio <- as.numeric(sup_ratio)
+hist(ratio)
+```
+
+### Calculate the weight ratio of netizens' attitude
+
+```{r, message=FALSE, warning=FALSE}
+for(i in 16:30){
+  Tweets[[i]] <- searchTwitter('Trump',n = 500,locale = 11/i/17)
+  Tweets.text[[i]] = laply(Tweets[[i]],function(t)t$getText()) # gets text from Tweets
+  analysis[[i]] = score.sentiment(Tweets.text[[i]], pos, neg) # calls sentiment function
+  k <- 0
+  cal <- analysis[[i]]$score
+  for(j in 1:500){
+    if(cal[j]>=1){
+      k <- k+1
+    } 
+  }
+  sup_ratio[i] <- k/500
+}
+for(i in 1:30){
+  k <- 0
+  g <- 0
+  cal <- analysis[[i]]$score
+  for(j in 1:500){
+    if(cal[j]>=1){
+      k <- k+cal[j]
+    }
+    if(cal[j]<0){
+      g <- g+abs(cal[j])
+    }
+  }
+  weight_ratio[i] <- k/(k+g)
+}
+weight_ratio <- as.numeric(weight_ratio)
+hist(weight_ratio)
+```
+
+## Analysis correction
+### The relationship between positive attitude and the approval rating of Trump
+
+```{r}
+setwd("C:/Users/Lei/Documents/First year of graduate/Statistics for Geography/Final project/Final project")
+      neg1 = scan("R.txt", what="character", comment.char=";")
+approve <- as.numeric(neg1)
+ratio <- as.numeric(sup_ratio)
+
+
+x <- approve
+y <- ratio
+plot(y ~ x)
+m <- lm(y~x)
+summary(m)
+abline(m,col="red",lwd=2)
+segments(x,fitted(m),x,y,col="blue",lty = "dashed")
+```
+
+```{r}
+print("the relationship between approval rating of Trump and attitude of netizen is:y*attitude = 1.09922*approval rating + 0.13515")
+```
+
+### ### The relationship between weight positive attitude and the approval rating of Trump
+
+```{r}
+Wratio <- as.numeric(weight_ratio)
+
+weight_x <- approve
+weight_y <- Wratio
+plot(weight_y ~ weight_x)
+weight_m <- lm(weight_y~weight_x)
+summary(weight_m)
+abline(weight_m,col="blue",lwd=2)
+segments(weight_x,fitted(weight_m),weight_x,weight_y,col="blue",lty = "dashed")
+```
+
+```{r}
+print("the relationship between approval rating of Trump and weight positive attitude is:y*weight_attitude = 0.8124*approval rating + 0.46417")
+```
+

@@ -1,0 +1,7 @@
+"0","setwd(""C:/Users/Lei/Documents/First year of graduate/Statistics for Geography/Final project/Final project""）"
+"0","      neg = scan(""negative-words.txt"", what=""character"", comment.char="";"")"
+"2","Read 4781 items
+"
+"0","      pos = scan(""positive-words.txt"", what=""character"", comment.char="";"")"
+"2","Read 2005 items
+"

@@ -1,0 +1,2 @@
+"0","tweets <- searchTwitter(""#Trump"", n=1000, lang=""en"")"
+"0","tweets.text <- sapply(tweets, function(x) x$getText())"

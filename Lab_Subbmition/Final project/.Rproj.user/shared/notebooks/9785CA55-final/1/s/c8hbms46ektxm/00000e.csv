@@ -1,0 +1,9 @@
+"0","setwd(""C:/Users/Lei/Documents/First year of graduate/Statistics for Geography/Final project/Final project""）"
+"0","      neg1 = scan(""R.txt"", what=""character"", comment.char="";"")"
+"2","Read 30 items
+"
+"0","approve <- as.numeric(neg1)"
+"0","ratio <- as.numeric(sup_ratio)"
+"0","x <- approve"
+"0","y <- ratio"
+"0","plot(y ~ x)"

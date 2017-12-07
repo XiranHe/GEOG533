@@ -1,0 +1,9 @@
+"0","data(""ratio"")"
+"2","data set ‘ratio’ not found"
+"0","data(""approve"")"
+"2","data set ‘approve’ not found"
+"0","ratio <- ratio %>%"
+"0","  mutate(state = rownames(.))"
+"2","Error in UseMethod(""mutate_"") : 
+  no applicable method for 'mutate_' applied to an object of class ""c('double', 'numeric')""
+"

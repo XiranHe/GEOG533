@@ -1,0 +1,92 @@
+library(twitteR)
+library(ROAuth)
+library(plyr)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+
+my.consumer.key = "jGMlhMS8kBFdXd8eYZElRbzJH"
+my.consumer.secret = "HMTxTdQ1IruiQT4PkeK0upLxKpsBBcql2gDIkUUOXfoIG0KYFl"
+my.access.token = "917361228456095745-uJSuEQNSwGhrYhhycgX9i3UHRo73DnH"
+my.access.token.secret = "RQFqWp5xI0gv1uzi41MfH5F2UWjLw3hhdVljrQOO4hxmP"
+
+my_oauth <- setup_twitter_oauth(consumer_key = my.consumer.key, consumer_secret = my.consumer.secret, access_token = my.access.token, access_secret = my.access.token.secret)
+
+save(my_oauth, file = "my_oauth.Rdata")
+
+
+setwd("C:/Users/Lei/Documents/First year of graduate/Statistics for Geography/Final project/Final project")
+      neg = scan("negative-words.txt", what="character", comment.char=";")
+      pos = scan("positive-words.txt", what="character", comment.char=";")
+      
+      
+      score.sentiment = function(tweets, pos.words, neg.words)
+        
+      {
+        scores = laply(tweets, function(tweet, pos.words, neg.words) {
+          
+          tweet = gsub('https://','',tweet) # removes https://
+          tweet = gsub('http://','',tweet) # removes http://
+          tweet=gsub('[^[:graph:]]', ' ',tweet) ## removes graphic characters  #like emoticons 
+          tweet = gsub('[[:punct:]]', '', tweet) # removes punctuation 
+          tweet = gsub('[[:cntrl:]]', '', tweet) # removes control characters
+          tweet = gsub('\\d+', '', tweet) # removes numbers
+          tweet=str_replace_all(tweet,"[^[:graph:]]", " ") 
+          tweet = tolower(tweet) # makes all letters lowercase
+          
+          word.list = str_split(tweet, '\\s+') # splits the tweets by word in a list
+          words = unlist(word.list) # turns the list into vector
+          pos.matches = match(words, pos.words) ## returns matching values for words from list 
+          neg.matches = match(words, neg.words)
+          pos.matches = !is.na(pos.matches) ## converts matching values to true of false
+          neg.matches = !is.na(neg.matches)
+          
+          score = sum(pos.matches) - sum(neg.matches) # true and false are treated as 1 and 0 so they can be added
+          
+          return(score)
+          
+        }, pos.words, neg.words )
+        
+        scores.df = data.frame(score=scores, text=tweets)
+        
+        return(scores.df)
+        
+      }
+
+Tweets <- list()
+Tweets.text <- list()
+analysis <- list()
+sup_ratio <- list()
+  for(i in 1:30){
+        level <- 0
+        Tweets[[i]] <- searchTwitter('Trump',n = 500,locale = 11/i/17)
+        Tweets.text[[i]] = laply(Tweets[[i]],function(t)t$getText()) # gets text from Tweets
+        analysis[[i]] = score.sentiment(Tweets.text[[i]], pos, neg) # calls sentiment function
+        k <- 0
+        cal <- analysis[[i]]$score
+        for(j in 1:500){
+          if(cal[j]>=1){
+            k <- k+1
+          } 
+        }
+        sup_ratio[i] <- k/500
+  }
+
+cal <- analysis[[1]]$score
+cal[1]
+
+for(j in 1:500){
+  if(cal[j]>=1){
+    k <- k+1
+  } 
+}
+258   
+    
+    sup_ratio <- list()
+    for(j in 1:30){
+      level <- table(analysis[[j]]$score)
+      sup <- sum(level[[7]]+level[[8]]+level[[9]]+level[[10]]+level[[11]])
+      sup_ratio[j] <- sup/500
+    }
+      hist(analysis$score)
+      

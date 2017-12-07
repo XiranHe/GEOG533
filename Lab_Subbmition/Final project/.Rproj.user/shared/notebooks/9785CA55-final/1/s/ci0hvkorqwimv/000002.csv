@@ -1,0 +1,4 @@
+"0","Wratio <- as.numeric(weight_ratio)"
+"0","weight_x <- approve"
+"0","weight_y <- Wratio"
+"0","plot(weight_y ~ weight_x)"

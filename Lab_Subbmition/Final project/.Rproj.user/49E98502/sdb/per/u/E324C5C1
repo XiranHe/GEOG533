@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "setwd(\"C:/Users/Lei/Documents/First year of graduate/Statistics for Geography/Final project/Final project\"）\n      neg1 = scan(\"R.txt\", what=\"character\", comment.char=\";\")\napprove <- as.numeric(neg1)\nratio <- as.numeric(sup_ratio)\n\n\nx <- approve\ny <- ratio\nplot(y ~ x)\nm <- lm(y~x)\nsummary(m)\nabline(m,col=\"red\",lwd=2)\nsegments(x,fitted(m),x,y,col=\"blue\",lty = \"dashed\")\nprint(\"the relationship between approval rating of Trump and attitude of netizen is: y*attitude = 1.5318*approval rating - 0.08278\")\n\n\n\n\nWratio <- as.numeric(weight_ratio)\n\nweight_x <- approve\nweight_y <- Wratio\nplot(weight_y ~ weight_x)\nweight_m <- lm(weight_y~weight_x)\nsummary(weight_m)\nabline(weight_m,col=\"blue\",lwd=2)\nsegments(weight_x,fitted(weight_m),weight_x,weight_y,col=\"blue\",lty = \"dashed\")\nprint(\"there is no correction bewteen the approval rating of Trump and the weight ratio of netizens' attitude\")\n\ndf <- data.frame(ratio,weight_ratio)\nm <- lm(x ~ y + weight_y, data = df)\nsummary(m)\nanova(m)\n\nthm\n            ",
+    "created" : 1512333446450.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3880718229",
+    "id" : "E324C5C1",
+    "lastKnownWriteTime" : 1512325114,
+    "last_content_update" : 1512357623254,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,3 @@
+"0","tweets = searchTwitter('Trump',n=500)"
+"0","Tweets.text = laply(tweets,function(t)t$getText()) # gets text from Tweets"
+"0","analysis = score.sentiment(Tweets.text, pos, neg) # calls sentiment function"

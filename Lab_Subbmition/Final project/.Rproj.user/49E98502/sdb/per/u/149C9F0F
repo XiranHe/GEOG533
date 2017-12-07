@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "library(twitteR)\nlibrary(ROAuth)\nlibrary(plyr)\nlibrary(dplyr)\nlibrary(stringr)\nlibrary(ggplot2)\n\nmy.consumer.key = \"jGMlhMS8kBFdXd8eYZElRbzJH\"\nmy.consumer.secret = \"HMTxTdQ1IruiQT4PkeK0upLxKpsBBcql2gDIkUUOXfoIG0KYFl\"\nmy.access.token = \"917361228456095745-uJSuEQNSwGhrYhhycgX9i3UHRo73DnH\"\nmy.access.token.secret = \"RQFqWp5xI0gv1uzi41MfH5F2UWjLw3hhdVljrQOO4hxmP\"\n\nmy_oauth <- setup_twitter_oauth(consumer_key = my.consumer.key, consumer_secret = my.consumer.secret, access_token = my.access.token, access_secret = my.access.token.secret)\n\nsave(my_oauth, file = \"my_oauth.Rdata\")\n\n\nsetwd(\"C:/Users/Lei/Documents/First year of graduate/Statistics for Geography/Final project/Final project\"）\n      neg = scan(\"negative-words.txt\", what=\"character\", comment.char=\";\")\n      pos = scan(\"positive-words.txt\", what=\"character\", comment.char=\";\")\n      \n      \n      score.sentiment = function(tweets, pos.words, neg.words)\n        \n      {\n        scores = laply(tweets, function(tweet, pos.words, neg.words) {\n          \n          tweet = gsub('https://','',tweet) # removes https://\n          tweet = gsub('http://','',tweet) # removes http://\n          tweet=gsub('[^[:graph:]]', ' ',tweet) ## removes graphic characters  #like emoticons \n          tweet = gsub('[[:punct:]]', '', tweet) # removes punctuation \n          tweet = gsub('[[:cntrl:]]', '', tweet) # removes control characters\n          tweet = gsub('\\\\d+', '', tweet) # removes numbers\n          tweet=str_replace_all(tweet,\"[^[:graph:]]\", \" \") \n          tweet = tolower(tweet) # makes all letters lowercase\n          \n          word.list = str_split(tweet, '\\\\s+') # splits the tweets by word in a list\n          words = unlist(word.list) # turns the list into vector\n          pos.matches = match(words, pos.words) ## returns matching values for words from list \n          neg.matches = match(words, neg.words)\n          pos.matches = !is.na(pos.matches) ## converts matching values to true of false\n          neg.matches = !is.na(neg.matches)\n          \n          score = sum(pos.matches) - sum(neg.matches) # true and false are treated as 1 and 0 so they can be added\n          \n          return(score)\n          \n        }, pos.words, neg.words )\n        \n        scores.df = data.frame(score=scores, text=tweets)\n        \n        return(scores.df)\n        \n      }\n\nTweets <- list()\nTweets.text <- list()\nanalysis <- list()\nsup_ratio <- list()\nweight_ratio <- list()\n\n  for(i in 1:15){\n        Tweets[[i]] <- searchTwitter('Trump',n = 500,locale = 11/i/17)\n        Tweets.text[[i]] = laply(Tweets[[i]],function(t)t$getText()) # gets text from Tweets\n        analysis[[i]] = score.sentiment(Tweets.text[[i]], pos, neg) # calls sentiment function\n        k <- 0\n        cal <- analysis[[i]]$score\n        for(j in 1:500){\n          if(cal[j]>=1){\n            k <- k+1\n          } \n        }\n        sup_ratio[i] <- k/500\n  }\nratio <- as.numeric(sup_ratio)\nhist(ratio)\n\nfor(i in 16:30){\n  Tweets[[i]] <- searchTwitter('Trump',n = 500,locale = 11/i/17)\n  Tweets.text[[i]] = laply(Tweets[[i]],function(t)t$getText()) # gets text from Tweets\n  analysis[[i]] = score.sentiment(Tweets.text[[i]], pos, neg) # calls sentiment function\n  k <- 0\n  cal <- analysis[[i]]$score\n  for(j in 1:500){\n    if(cal[j]>=1){\n      k <- k+1\n    } \n  }\n  sup_ratio[i] <- k/500\n}\nfor(i in 1:30){\n  k <- 0\n  g <- 0\n  cal <- analysis[[i]]$score\n  for(j in 1:500){\n    if(cal[j]>=1){\n      k <- k+cal[j]\n    }\n    if(cal[j]<0){\n      g <- g+abs(cal[j])\n    }\n  }\n  weight_ratio[i] <- k/(k+g)\n}\ntable(analysis[[1]]$score)\nweight_ratio <- as.numeric(weight_ratio)\nhist(weight_ratio)\n\n\n\n\n\n      \n",
+    "created" : 1512147287539.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "1483037030",
+    "id" : "149C9F0F",
+    "lastKnownWriteTime" : 2478186459377789292,
+    "last_content_update" : 1512350841805,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
